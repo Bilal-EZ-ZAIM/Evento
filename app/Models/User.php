@@ -21,8 +21,13 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'typeUser',
+        'role_id',
     ];
+
+    public function roleId()
+    {
+        return $this->belongsTo(Role_id::class, 'role_id' , 'id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -48,4 +53,6 @@ class User extends Authenticatable
     // {
     //     return $this->hasOne(Evenment::class , 'user_id');
     // }
+
+    
 }

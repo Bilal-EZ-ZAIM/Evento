@@ -79,16 +79,15 @@
         <div class="container-fluid">
             <div id="sidebar">
                 <div class="btn-group-vertical">
-                    <button class="btn btn-primary" onclick="showSection('addEventSection')">Ajouter Evenement</button>
-                    <button class="btn btn-primary" onclick="showSection('userInfoSection')">Profile</button>
-                    <button class="btn btn-primary" onclick="showSection('allEventsSection')">Tous les Evenements</button>
-                    <button class="btn btn-primary" onclick="showSection('allCategorySection')">Tous les
-                        Category</button>
-                    <button class="btn btn-primary" onclick="showSection('statisticsSection')">Statistiques</button>
-                    <button class="btn btn-primary" onclick="showSection('ticketsSection')">Tickets</button>
+                    @if (Auth::check() && Auth::user()->roleId && Auth::user()->roleId->name === 'admin')
+                        <button class="btn btn-primary" onclick="showSection('allEventsSection')">les Evenements ne pas
+                            accepter</button>
+                        <button class="btn btn-primary" onclick="showSection('allCategorySection')">Tous les Category</button>
+                        <button class="btn btn-primary" onclick="showSection('allUserSection')">Tous les Utilisateure</button>
+                        <button class="btn btn-primary" onclick="showSection('statisticsSection')">Statistiques</button>
+                    @endif
                 </div>
             </div>
-
             <div id="content">
                 @if (session('status'))
                     <div class="alert alert-success" role="alert">
@@ -96,100 +95,9 @@
                     </div>
                 @endif
 
-                <div id="addEventSection" class="content-section active-section">
-                    <div class="content">
-                        <h2>Ajouter Evenement</h2>
-
-                        <form action={{ route('evenement') }} method="post">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">Titer</label>
-                                <input type="text" class="form-control" name="titre" id="exampleFormControlInput1"
-                                    placeholder="titre">
-                                @error('titre')
-                                    {{ $message }}
-                                @enderror
-                            </div>
-                            <div class="mb-3">
-                                <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-                                <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="date" class="form-label">Date</label>
-                                <input type="date" class="form-control" name="date" id="date">
-                            </div>
-                            <div class="mb-3">
-                                <label for="ville" class="form-label">Ville</label>
-                                <select class="form-control" name="ville" id="ville">
-                                    @foreach ($ville as $item)
-                                        <option value=" {{ $item->id }} ">{{ $item->ville }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="catecory" class="form-label">Catecory</label>
-                                <select name="categorie_id" class="form-control" id="catecory">
-                                    @foreach ($catecory as $item)
-                                        <option value=" {{ $item->id }} ">{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="places" class="form-label">Nombre Places</label>
-                                <input type="number" class="form-control" name="nombre_places" id="places"
-                                    placeholder="Nombre Places">
-                            </div>
-                            <div class="mb-3">
-                                <label for="places" class="form-label">prix</label>
-                                <input type="number" class="form-control" name="prix" id="places"
-                                    placeholder="Nombre Places">
-                            </div>
-                            <div class="mb-3">
-                                <label for="ville" class="form-label">Aceppter le resrvation automatique </label>
-                                <select class="form-control" name="auto" id="ville">
-
-                                    <option value="1"> Oui </option>
-
-                                    <option value="0"> Non </option>
-
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                </div>
-                <div id="userInfoSection" class="content-section">
-                    <div class="content">
-                        <h2>Informations Utilisateur</h2>
-                        <img class="image"
-                            src="https://media.discordapp.net/attachments/1158803349248946218/1214230528040116284/image.png?ex=65f85b4d&is=65e5e64d&hm=c0d8b7271fd93b50c4d944b8cf7331dbea2452f17d46226d399ae2a8395247d1&=&format=webp&quality=lossless&width=565&height=565"
-                            alt="">
-                        <p> User name: <strong> {{ $user->username }} </strong> </p>
-                        <p> Email: <strong> {{ $user->email }} </strong> </p>
-
-                        <!-- Bouton de déconnexion -->
-                        <form action="{{ route('logOut') }}" method="get">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">Log Out</button>
-                        </form>
-
-                        <div class="d-flex justify-content-center">
-                            <form action="" method="post" enctype="multipart/form-data">
-                                @csrf
-                                <div class="mb-3">
-                                    <input type="file" class="form-control" id="photo" name="photo">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Upload Photo</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
 
 
-
-                <div id="allEventsSection" class="content-section">
+                <div id="allEventsSection" class="content-section active-section">
                     <div class="content">
                         <h2>Tous les Evenements</h2>
                         @if (!empty($evenement))
@@ -207,17 +115,15 @@
                                             <th scope="row">{{ $index + 1 }}</th>
                                             <td>{{ $row->titre }}</td>
                                             <td class="d-flex gap-3">
-                                                <a href="{{ route('updite', ['id' => $row->id]) }}">
-                                                    <button type="button" class=" btn btn-primary ModifierCategory"
-                                                        data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                        Modifier
+                                                <a href="{{ route('accepter', ['id' => $row->id]) }}">
+                                                    <button type="button" class=" btn btn-primary">
+                                                        Accepter
                                                     </button></a>
 
                                                 <form action="{{ route('delete', ['id' => $row->id]) }}" method="get">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-danger suppremerCategory"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        Supprimer
+                                                    <button type="submit" class="btn btn-danger">
+                                                        Annuler
                                                     </button>
                                                 </form>
 
@@ -281,12 +187,13 @@
                                             <td>{{ $row->name }}</td>
                                             <td class="d-flex gap-3">
                                                 <button type="button" class="btn btn-primary ModifierCategory"
-                                                    data-bs-toggle="modal" data-bs-target="#exampleModalModifier">
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModalModifier{{ $row->id }}">
                                                     Modifier
                                                 </button>
 
-                                                <div class="modal fade" id="exampleModalModifier" tabindex="-1"
-                                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal fade" id="exampleModalModifier{{ $row->id }}"
+                                                    tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -317,7 +224,6 @@
                                                 </div>
 
 
-
                                                 <form action="{{ route('delete.category', ['id' => $row->id]) }}"
                                                     method="get">
                                                     @csrf
@@ -333,6 +239,41 @@
                         @endif
                     </div>
                 </div>
+
+                <div id="allUserSection" class="content-section">
+                    <div class="content">
+
+                        @if (!empty($users))
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nom du Utileusateur</th>
+                                        <th scope="col">Changer role</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="search-results">
+                                    @foreach ($users as $index => $row)
+                                        <tr>
+                                            <th scope="row">{{ $index + 1 }}</th>
+                                            <td>{{ $row->username }}</td>
+                                            <td class="d-flex gap-3">
+                                                <form action="{{ route('changerRoler', ['id' => $row->id]) }}"
+                                                    method="get">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Organisateur
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
+                    </div>
+                </div>
+
                 <div id="statisticsSection" class="content-section">
                     <div class="content">
                         <h2>Statistiques</h2>

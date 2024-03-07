@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Categorie;
 use App\Models\Evenment;
+use App\Models\Reservation;
+use App\Models\Role_id;
+use App\Models\Ticek;
 use App\Models\User;
 use App\Models\Ville;
 use App\Notifications\ForgetPassword;
@@ -12,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Spatie\FlareClient\Http\Exceptions\NotFound;
 use Symfony\Component\Mailer\Transport\Smtp\Auth\LoginAuthenticator;
 
 class AuthController extends Controller
@@ -21,14 +25,98 @@ class AuthController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $evenement = Evenment::latest()->where('user_id' , $user->id)->get();
-        $ville = Ville::all();
-        $catecory = Categorie::all();
-        // dd($evenement);
+        // $user = Auth::user();
 
-        return view('profile', compact('user', 'evenement' , 'ville' , 'catecory'));
+        // $userName = $user->name;
+        // $userRole = $user->roleId->name;
+        // return response()->json($userRole);
+        // return response()->json($user);
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $ville = Ville::all();
+            $catecory = Categorie::all();
+
+            $evenement = Evenment::latest()->where('user_id', $user->id)->get();
+            return view('profile', compact('user', 'evenement', 'ville', 'catecory'));
+        }
     }
+
+    public function userProfile()
+    {
+        // $user = Auth::user();
+
+        // $userName = $user->name;
+        // $userRole = $user->roleId->name;
+        // return response()->json($userRole);
+        // return response()->json($user);
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            $reservation = Reservation::where('user_id' , $user->id)->get();
+            $ticks = Ticek::all();
+            
+            $ville = Ville::all();
+            $catecory = Categorie::all();
+
+            $evenement = Evenment::latest()->where('user_id', $user->id)->get();
+            return view('userProfile', compact('user', 'evenement', 'ville', 'catecory' , 'reservation' , 'ticks'));
+        }
+    }
+
+    public function admin()
+    {
+        // $user = Auth::user();
+
+        // $userName = $user->name;
+        // $userRole = $user->roleId->name;
+        // return response()->json($userRole);
+        // return response()->json($user);
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+
+            if ($user->roleId->name === 'admin') {
+                $ville = Ville::all();
+                $catecory = Categorie::all();
+                $users = User::where('role_id', 2)->get();
+                $evenement = Evenment::where('accepter', false)->latest()->get();
+                return view('admin', compact('user', 'evenement', 'ville', 'catecory', 'users'));
+            } else {
+
+                return redirect()->route('home');
+            }
+        }
+    }
+
+    public function changerRoler(Request $request)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            if ($user->roleId->name != 'admin') {
+                return redirect()->route('login')->with('status', 'Unauthorized');
+            }
+
+            $userToUpdate = User::find($request->id);
+
+            // dd($userToUpdate);
+
+            if (!$userToUpdate) {
+                return redirect()->route('admin')->with('status', 'User not found');
+            }
+
+            $userToUpdate->role_id = 3;
+            $userToUpdate->save();
+
+            return redirect()->route('admin')->with('status', 'User role updated successfully');
+        } else {
+            return redirect()->route('login')->with('status', 'Unauthorized');
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -49,7 +137,7 @@ class AuthController extends Controller
      */
     public function regester(Request $request)
     {
-        
+
 
         $user =  $request->validate([
             'username' => 'required|string|min:3|max:30',
@@ -67,7 +155,7 @@ class AuthController extends Controller
                 'username' => $user["username"],
                 'email' => $user["email"],
                 'password' => bcrypt($user["password"]),
-                'typeUser' => 'user',
+                'role_id' => 2,
             ]);
 
             return view('/Ahouthification/login');
@@ -172,10 +260,9 @@ class AuthController extends Controller
 
     public function logOut()
     {
-        
+
         Auth::logout();
 
         return redirect()->route('login');
     }
-
 }

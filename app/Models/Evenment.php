@@ -15,7 +15,10 @@ class Evenment extends Model
         'ville_id',
         'nombre_places',
         'user_id',
+        'prix',
+        'auto',
         'categorie_id',
+        'accepter',
     ];
 
     public function ville()

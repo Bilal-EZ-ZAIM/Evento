@@ -30,7 +30,7 @@ Route::get('/', [EvenmentController::class, 'index'])->name('home');
 
 
 Route::middleware(['auth'])->get('/detaile/organisateur/{id}', [ReservationController::class, 'show'])->name('shows');
-Route::middleware(['auth'])->get('/detaile/organisateur/{id}', [ReservationController::class, 'show'])->name('shows');
+// Route::middleware(['auth'])->get('/detaile/organisateur/{id}', [ReservationController::class, 'show'])->name('shows');
 
 Route::middleware(['auth'])->get('/accepeter/{id}', [ReservationController::class, 'accepeter'])->name('accepeter');
 
@@ -48,6 +48,8 @@ Route::middleware(['auth'])->get('/delet/{id}', [EvenmentController::class, 'des
 
 Route::middleware(['auth'])->get('/recherch', [EvenmentController::class, 'recherch'])->name('recherch');
 
+Route::middleware(['auth'])->get('/accepter/{id}', [EvenmentController::class, 'accepter'])->name('accepter');
+
 
 Route::get('/auth', [AuthController::class, 'create'])->name("creatUser");
 
@@ -59,15 +61,23 @@ Route::post('/auth/login', [AuthController::class, 'login'])->name("login");
 
 Route::middleware(['auth'])->get('/profile', [AuthController::class, 'index'])->name('profile');
 
+Route::middleware(['auth'])->get('/admin', [AuthController::class, 'admin'])->name('admin');
+
 Route::middleware(['auth'])->post('/profile', [AuthController::class, 'upload'])->name("upload.image");
 
 
 Route::middleware(['auth'])->get('/logOut', [AuthController::class, 'logOut'])->name(('logOut'));
 
+Route::middleware(['auth'])->get('/changerRoler/{id}', [AuthController::class, 'changerRoler'])->name(('changerRoler'));
+
+Route::middleware(['auth'])->get('/userProfile', [AuthController::class, 'userProfile'])->name('userProfile');
+
+
 Route::middleware(['auth'])->get('/ajouter', [ReservationController::class, 'ajouter'])->name('ajouter');
 
 Route::middleware(['auth'])->post('/category', [CategorieController::class, 'store'])->name('category');
 Route::middleware(['auth'])->get('/deletCategory/{id}', [CategorieController::class, 'destroy'])->name('delete.category');
+Route::middleware(['auth'])->post('/upditCategory/{id}', [CategorieController::class, 'update'])->name('update.category');
 
 // Route::get('/showForgotPasswordForm', [ResetPassword::class, 'showForgotPasswordForm'])->name(('PasswordForm'));
 

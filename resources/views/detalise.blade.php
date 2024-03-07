@@ -2,6 +2,16 @@
 
 @section('main')
     <div class="container mt-5">
+
+        @if (session('statu'))
+            <div class="alert alert-success" role="alert">
+                {{ session('statu') }}
+            </div>
+        @elseif(session('error'))
+            <div class="alert alert-danger" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="jumbotron">
             <h1 class="display-4">Détails de l'événement</h1>
             <p class="lead">Découvrez les détails de l'événement.</p>
@@ -18,7 +28,8 @@
                     <p class="card-text">Tickets: <strong>{{ $evenement->nombre_places }}</strong></p>
                     <p class="card-text">catecory: <strong>{{ $evenement->catecory->name }}</strong></p>
                     <p class="card-text">Prix de Tickets: <strong>{{ $evenement->prix }} DH</strong></p>
-                    <a href="{{ route('ajouter', ['id' => $evenement->id]) }}" class="btn btn-primary">Ajouter au panier</a>
+                    <a href="{{ route('ajouter', ['id' => $evenement->id]) }}" class="btn btn-primary">Ajouter au
+                        panier</a>
                 </div>
             </div>
         </div>
@@ -50,9 +61,8 @@
                                 <td>{{ $row->user->username }}</td>
                                 <td>{{ $row->etat->type }}</td>
                                 <td class="d-flex gap-3">
-                                    <a href="{{ route('accepeter', ['id' => $row->evenemont_id]) }}">
-                                        <button type="button" class=" btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal">
+                                    <a href="{{ route('accepeter', ['id' => $row->id]) }}">
+                                        <button type="button" class=" btn btn-primary" >
                                             Accepter
                                         </button></a>
 

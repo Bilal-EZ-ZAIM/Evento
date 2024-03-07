@@ -9,15 +9,34 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{route('home')}}">Home</a>
+                        <a class="nav-link active" aria-current="page" href="{{ route('home') }}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <!-- Profile link -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('profile') }}">Profile</a>
-                    </li>
+
+                    @if (Auth::check())
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('userProfile') }}">{{ Auth::user()?->username }} </a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">Login </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">Register </a>
+                        </li>
+                    @endif
+
+                    @if (Auth::check() && Auth::user()->roleId && Auth::user()->roleId->name === 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin') }}">Admin </a>
+                        </li>
+                    @endif
+
+                    @if (Auth::check() && Auth::user()->roleId && Auth::user()->roleId->name === 'organisateur')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('profile') }}">{{ Auth::user()?->username }} </a>
+                        </li>
+                    @endif
+
                 </ul>
             </div>
         </div>

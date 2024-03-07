@@ -12,4 +12,9 @@ class Categorie extends Model
         'name',
         'user_id',
     ];
+
+    public function even()
+    {
+        return $this->belongsTo(Evenment::class, 'id' , 'categorie_id');
+    }
 }
