@@ -36,6 +36,8 @@ Route::middleware(['auth'])->get('/accepeter/{id}', [ReservationController::clas
 
 Route::middleware(['auth'])->get('/anniller/{id}', [ReservationController::class, 'anniller'])->name('anniller');
 
+Route::get('/tickets/{ticketId}/download', [ReservationController::class, 'download'])->name('download.ticket');
+
 Route::middleware(['auth'])->post('/evenement', [EvenmentController::class, 'store'])->name('evenement');
 
 Route::get('/detaile/{id}', [EvenmentController::class, 'show'])->name('show');
@@ -47,6 +49,8 @@ Route::middleware(['auth'])->post('/update/{id}', [EvenmentController::class, 'u
 Route::middleware(['auth'])->get('/delet/{id}', [EvenmentController::class, 'destroy'])->name('delete');
 
 Route::middleware(['auth'])->get('/recherch', [EvenmentController::class, 'recherch'])->name('recherch');
+
+Route::middleware(['auth'])->get('/recherchCategory', [EvenmentController::class, 'recherchCategory'])->name('recherchCategory');
 
 Route::middleware(['auth'])->get('/accepter/{id}', [EvenmentController::class, 'accepter'])->name('accepter');
 

@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\Attributes\Ticket;
 use Spatie\FlareClient\Http\Exceptions\NotFound;
 use Symfony\Component\Mailer\Transport\Smtp\Auth\LoginAuthenticator;
 
@@ -38,7 +39,8 @@ class AuthController extends Controller
             $ville = Ville::all();
             $catecory = Categorie::all();
 
-            $evenement = Evenment::latest()->where('user_id', $user->id)->get();
+            $evenement = Evenment::with('reservation.user')->where('user_id', $user->id)->withCount('reservation')->latest()->where('user_id', $user->id)->get();
+
             return view('profile', compact('user', 'evenement', 'ville', 'catecory'));
         }
     }
@@ -54,14 +56,17 @@ class AuthController extends Controller
 
         if (Auth::check()) {
             $user = Auth::user();
-            $reservation = Reservation::where('user_id' , $user->id)->get();
+            $reservation = Reservation::with('event')->where('user_id', $user->id)->get();
             $ticks = Ticek::all();
-            
+
             $ville = Ville::all();
             $catecory = Categorie::all();
+            $tickets = Ticek::with('reservation')->with("reservation.event")->get();
+
+            // return response()->json($reservation);
 
             $evenement = Evenment::latest()->where('user_id', $user->id)->get();
-            return view('userProfile', compact('user', 'evenement', 'ville', 'catecory' , 'reservation' , 'ticks'));
+            return view('userProfile', compact('user', 'evenement', 'ville', 'catecory', 'reservation', 'ticks'));
         }
     }
 
@@ -81,9 +86,23 @@ class AuthController extends Controller
             if ($user->roleId->name === 'admin') {
                 $ville = Ville::all();
                 $catecory = Categorie::all();
+                $countOrganisateur = User::where('role_id', 3)->count();
+                $countUtilisateur = User::where('role_id', 2)->count();
+                $countEvenementAccepter = Evenment::where('accepter', 1)->count();
+                $countEvenementNoAccepter = Evenment::where('accepter', 0)->count();
+
+                $data = [
+                    'countOrganisateur' => $countOrganisateur,
+                    'countUtilisateur' => $countUtilisateur,
+                    'countEvenementAccepter' => $countEvenementAccepter,
+                    'countEvenementNoAccepter' => $countEvenementNoAccepter,
+                ];
+
+
+
                 $users = User::where('role_id', 2)->get();
                 $evenement = Evenment::where('accepter', false)->latest()->get();
-                return view('admin', compact('user', 'evenement', 'ville', 'catecory', 'users'));
+                return view('admin', compact('user', 'evenement', 'ville', 'catecory', 'users' , 'data'));
             } else {
 
                 return redirect()->route('home');

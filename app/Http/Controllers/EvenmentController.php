@@ -19,12 +19,14 @@ class EvenmentController extends Controller
     {
         $evenement = Evenment::where('accepter', 1)->latest()->paginate(6);
         $user = Auth::user();
-        if($user){
-            $reservation = Reservation::where('user_id' , $user->id)->get();
-            return view('home', compact('evenement' , 'reservation'));
+        $category = Categorie::all();
+
+        if ($user) {
+            $reservation = Reservation::where('user_id', $user->id)->get();
+            return view('home', compact('evenement', 'reservation', 'category'));
         }
 
-        return view('home', compact('evenement'));
+        return view('home', compact('evenement' , 'category'));
     }
 
     /**
@@ -33,6 +35,7 @@ class EvenmentController extends Controller
     public function recherch(Request $request)
     {
         $query = $request->get('query');
+        $category = Categorie::all();
 
 
         // Filtrer les événements par titre
@@ -44,14 +47,25 @@ class EvenmentController extends Controller
             ->latest()
             ->paginate(6);
 
-        // $evenement = Categorie::where('name', 'like', '%' . $query . '%')
-        // ->with('even')
-        // ->latest()
-        // ->paginate(6);
+        return view('home', compact('evenement', 'category'));
+    }
 
-        // return  response()->json($evenement);
+    public function recherchCategory(Request $request)
+    {
+        $query = $request->get('query');
+        $category = Categorie::all();
 
-        return view('home', compact('evenement'));
+
+        // Filtrer les événements par titre
+        $evenement = Evenment::with('user')
+            ->with('ville')
+            ->with('catecory')
+            ->where('categorie_id', $query)
+            ->where('accepter', 1)
+            ->latest()
+            ->paginate(6);
+
+        return view('home', compact('evenement', 'category'));
     }
 
     /**
@@ -93,11 +107,11 @@ class EvenmentController extends Controller
      */
     public function show(Request $request)
     {
-        
+
 
         $evenement = Evenment::where('id', $request->id)->first();
 
-       
+
 
 
         if ($evenement->accepeter != 0) {

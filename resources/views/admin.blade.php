@@ -72,6 +72,43 @@
             width: 150px;
             height: 150px;
         }
+
+        .content-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .statistics-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .statistics-item {
+            margin-bottom: 10px;
+            width: 400px;
+            display: flex;
+            align-items: center;
+        }
+
+        .statistics-label {
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .statistics-value {
+            margin-left: 10px;
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
     </style>
     </head>
 
@@ -120,13 +157,7 @@
                                                         Accepter
                                                     </button></a>
 
-                                                <form action="{{ route('delete', ['id' => $row->id]) }}" method="get">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-danger">
-                                                        Annuler
-                                                    </button>
-                                                </form>
-
+                                               
 
                                                 <a href="{{ route('shows', ['id' => $row->id]) }}"><button
                                                         class="btn btn-primary">Detaie</button></a>
@@ -276,10 +307,30 @@
 
                 <div id="statisticsSection" class="content-section">
                     <div class="content">
-                        <h2>Statistiques</h2>
-                        <!-- Contenu de la section Statistiques -->
+                        <h2 class="section-title">Statistiques</h2>
+                        <ul class="statistics-list">
+                            <li class="statistics-item">
+                                <span class="statistics-label">Nombre d'organisateurs :</span>
+                                <span class="statistics-value">{{ $data['countOrganisateur'] }}</span>
+                            </li>
+                            <li class="statistics-item">
+                                <span class="statistics-label">Nombre d'utilisateurs :</span>
+                                <span class="statistics-value">{{ $data['countUtilisateur'] }}</span>
+                            </li>
+                            <li class="statistics-item">
+                                <span class="statistics-label">Nombre d'événements acceptés :</span>
+                                <span class="statistics-value">{{ $data['countEvenementAccepter'] }}</span>
+                            </li>
+                            <li class="statistics-item">
+                                <span class="statistics-label">Nombre d'événements non acceptés :</span>
+                                <span class="statistics-value">{{ $data['countEvenementNoAccepter'] }}</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
+
+
+
                 <div id="ticketsSection" class="content-section">
                     <div class="content">
                         <h2>Tickets</h2>

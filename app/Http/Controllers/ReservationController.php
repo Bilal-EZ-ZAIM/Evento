@@ -91,36 +91,36 @@ class ReservationController extends Controller
 
             return back()->with('statu', 'Réservation ajoutée avec succès');
         }
-
         if ($evenement->auto == 1) {
-
-
+            $existingReservation = Reservation::where('user_id', $user->id)
+                                              ->where('evenemont_id', $evenement->id)
+                                              ->first();
+        
+            if ($existingReservation) {
+                return back()->with('error', 'Vous avez déjà réservé pour cet événement.');
+            }
+        
             $reservation = Reservation::create([
                 'user_id' => $user->id,
                 'etat_id' => 2,
                 'evenemont_id' => $evenement->id,
             ]);
-
-
+        
+            $evenement->update(['nombre_places' => $evenement->nombre_places - 1]);
+        
             if ($reservation) {
                 Ticek::create([
                     'reservation' => $reservation->id,
                 ]);
-
+        
                 return back()->with('statu', 'Ticek ajoutée avec succès');
             }
         }
+        
 
 
 
-
-
-
-
-        // Mettre à jour le nombre de places disponibles
-        $evenement->decrement('nombre_places');
-
-        return back()->with('status', 'Réservation ajoutée avec succès');
+        return back()->with('statu', 'Réservation ajoutée avec succès');
     }
 
 
@@ -144,6 +144,9 @@ class ReservationController extends Controller
 
         if ($user->id == $evenement->user_id) {
             $reservation = Reservation::where('evenemont_id', $request->id)->with('user')->with('etat')->where('etat_id', 1)->get();
+
+            
+
 
 
             return view('detalise', compact("evenement", "reservation"));
@@ -175,7 +178,7 @@ class ReservationController extends Controller
             $valideReservation = $reservation->update(['etat_id' => 2]);
 
             if ($valideReservation) {
-
+               
                 $evenement->update(['nombre_places' => $evenement->nombre_places - 1]);
                 Ticek::create([
                     'reservation' => $reservation->id,
@@ -189,6 +192,7 @@ class ReservationController extends Controller
             return back()->with('status', 'Unauthorized action');
         }
     }
+    
 
 
     public function anniller(Request $request)

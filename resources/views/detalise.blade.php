@@ -43,8 +43,8 @@
                 </div>
             @endif
 
-            @if (!empty($reservation))
-                <h2>Tous les Reservation</h2>
+            @if (!empty($reservation) && $evenement->auto == 0)
+                <h2>Tous les Reservation </h2>
                 <table class="table">
                     <thead>
                         <tr>
@@ -62,7 +62,7 @@
                                 <td>{{ $row->etat->type }}</td>
                                 <td class="d-flex gap-3">
                                     <a href="{{ route('accepeter', ['id' => $row->id]) }}">
-                                        <button type="button" class=" btn btn-primary" >
+                                        <button type="button" class=" btn btn-primary">
                                             Accepter
                                         </button></a>
 
@@ -78,10 +78,7 @@
             @endif
 
         </div>
+
     </div>
 
-    <!-- Ajouter les scripts JavaScript de Bootstrap (jQuery et Popper.js) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 @endsection

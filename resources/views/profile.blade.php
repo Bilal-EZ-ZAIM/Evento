@@ -80,12 +80,8 @@
             <div id="sidebar">
                 <div class="btn-group-vertical">
                     <button class="btn btn-primary" onclick="showSection('addEventSection')">Ajouter Evenement</button>
-                    <button class="btn btn-primary" onclick="showSection('userInfoSection')">Profile</button>
                     <button class="btn btn-primary" onclick="showSection('allEventsSection')">Tous les Evenements</button>
-                    <button class="btn btn-primary" onclick="showSection('allCategorySection')">Tous les
-                        Category</button>
                     <button class="btn btn-primary" onclick="showSection('statisticsSection')">Statistiques</button>
-                    <button class="btn btn-primary" onclick="showSection('ticketsSection')">Tickets</button>
                 </div>
             </div>
 
@@ -160,34 +156,7 @@
                         </form>
                     </div>
                 </div>
-                <div id="userInfoSection" class="content-section">
-                    <div class="content">
-                        <h2>Informations Utilisateur</h2>
-                        <img class="image"
-                            src="https://media.discordapp.net/attachments/1158803349248946218/1214230528040116284/image.png?ex=65f85b4d&is=65e5e64d&hm=c0d8b7271fd93b50c4d944b8cf7331dbea2452f17d46226d399ae2a8395247d1&=&format=webp&quality=lossless&width=565&height=565"
-                            alt="">
-                        <p> User name: <strong> {{ $user->username }} </strong> </p>
-                        <p> Email: <strong> {{ $user->email }} </strong> </p>
-
-                        <!-- Bouton de déconnexion -->
-                        <form action="{{ route('logOut') }}" method="get">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">Log Out</button>
-                        </form>
-
-                        <div class="d-flex justify-content-center">
-                            <form action="" method="post" enctype="multipart/form-data">
-                                @csrf
-                                <div class="mb-3">
-                                    <input type="file" class="form-control" id="photo" name="photo">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Upload Photo</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
+               
 
                 <div id="allEventsSection" class="content-section">
                     <div class="content">
@@ -234,115 +203,39 @@
                     </div>
 
                 </div>
-                <div id="allCategorySection" class="content-section">
-                    <div class="content">
-                        <div class="d-flex justify-content-between">
-                            <h2>Tous les Categorie</h2>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal">ajouter Categorie</button>
-                        </div>
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter Categorie</h1>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action={{ route('category') }} method="post">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="exampleFormControlInput1" class="form-label">Nom de
-                                                    Categorie</label>
-                                                <input type="text" class="form-control" name="name"
-                                                    id="exampleFormControlInput1" placeholder="nom de categoru">
-                                            </div>
-                                            <button type="submit" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Ajouter</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if (!empty($catecory))
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Nom du Category</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="search-results">
-                                    @foreach ($catecory as $index => $row)
-                                        <tr>
-                                            <th scope="row">{{ $index + 1 }}</th>
-                                            <td>{{ $row->name }}</td>
-                                            <td class="d-flex gap-3">
-                                                <button type="button" class="btn btn-primary ModifierCategory"
-                                                    data-bs-toggle="modal" data-bs-target="#exampleModalModifier">
-                                                    Modifier
-                                                </button>
-
-                                                <div class="modal fade" id="exampleModalModifier" tabindex="-1"
-                                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                                                    Modifier Categorie</h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form
-                                                                    action="{{ route('update.category', ['id' => $row->id]) }}"
-                                                                    method="post">
-                                                                    @csrf
-                                                                    <div class="mb-3">
-                                                                        <label for="exampleFormControlInput1"
-                                                                            class="form-label">Nom de Categorie</label>
-                                                                        <input type="text" class="form-control"
-                                                                            name="name" id="exampleFormControlInput1"
-                                                                            placeholder="Nom de categorie"
-                                                                            value="{{ $row->name }}">
-                                                                    </div>
-                                                                    <button type="submit"
-                                                                        class="btn btn-secondary">Mettre à jour</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-
-                                                <form action="{{ route('delete.category', ['id' => $row->id]) }}"
-                                                    method="get">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-danger">
-                                                        Supprimer
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
-                    </div>
-                </div>
                 <div id="statisticsSection" class="content-section">
                     <div class="content">
-                        <h2>Statistiques</h2>
-                        <!-- Contenu de la section Statistiques -->
-                    </div>
-                </div>
-                <div id="ticketsSection" class="content-section">
-                    <div class="content">
-                        <h2>Tickets</h2>
-                        <!-- Contenu de la section Tickets -->
+                        <h2 class="text-center mb-4">Statistiques des événements</h2>
+                       
+                        @foreach ($evenement as $event)
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h3 class="card-title">{{ $event['titre'] }}</h3>
+                                    <p class="card-text"><strong>Nombre de places disponibles:</strong>
+                                        {{ $event['nombre_places'] }}</p>
+                                    <p class="card-text"><strong>Accepté:</strong>
+                                        {{ $event['accepter'] ? 'Oui' : 'Non' }}</p>
+                                    <p class="card-text"><strong>Nombre de réservations:</strong>
+                                        {{ $event['reservation_count'] }}</p>
+                                    @if (!empty($event['reservation']))
+                                        <h5 class="card-subtitle mb-2 text-muted">Informations sur la réservation:</h5>
+                                        <ul class="list-group">
+                                            @foreach ($event['reservation'] as $reservation)
+                                                <li class="list-group-item">
+                                                    <strong>Nom d'utilisateur:</strong>
+                                                    {{ $reservation['user']['username'] }}
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Email:</strong> {{ $reservation['user']['email'] }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <p class="card-text text-muted">Aucune réservation pour le moment.</p>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

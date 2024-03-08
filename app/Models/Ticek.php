@@ -12,7 +12,7 @@ class Ticek extends Model
         'reservation',
     ];
 
-    public function etat()
+    public function reservation()
     {
         return $this->belongsTo(Reservation::class, 'reservation');
     }
@@ -21,4 +21,5 @@ class Ticek extends Model
     {
         return $this->belongsTo(Evenment::class, 'evenemont_id');
     }
+    
 }
